@@ -11,6 +11,13 @@ import (
 	"github.com/unstablebuild/rune-go-sdk/api/workspaceapi"
 )
 
-func newPtyGather(ctx context.Context, master workspaceapi.File) (*ptyGather, bool) {
+type ptyGather struct {
+	ready chan []byte
+	err   error
+}
+
+func newPtyGather(context.Context, workspaceapi.File) (*ptyGather, bool) {
 	return nil, false
 }
+
+func (g *ptyGather) release([]byte) {}
