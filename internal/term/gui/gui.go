@@ -19,22 +19,15 @@ package gui
 import (
 	"context"
 	"errors"
-	"fmt"
 	"image"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	ebiten "github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	log "github.com/sirupsen/logrus"
-	"github.com/unstablebuild/blue/iterator"
-	"github.com/unstablebuild/blue/logging"
 	"github.com/unstablebuild/rune-go-sdk/term"
 	"github.com/unstablebuild/rune-go-sdk/tui"
 	"github.com/unstablebuild/tcell/v3"
 	"unstable.build/rune/internal/cell"
-	"unstable.build/rune/internal/term/gui/drawrect"
 	"unstable.build/rune/internal/term/gui/font"
 )
 
