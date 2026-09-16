@@ -6,5 +6,8 @@
 package ideupgrade
 
 func detectRunningInstallOS(real string, cfg Config) (detectedInstall, error) {
-	return detectedInstall{ExecutablePath: real}, ErrUpgradeNotSupported
+	return detectedInstall{ExecutablePath: real}, &ErrUpgradeNotSupported{
+		Path:   real,
+		Reason: errNoAppBundle,
+	}
 }
