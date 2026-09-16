@@ -21,9 +21,9 @@ import (
 	"fmt"
 
 	ebiten "github.com/hajimehoshi/ebiten/v2"
+	log "github.com/sirupsen/logrus"
 	"github.com/unstablebuild/blue/iterator"
 	"github.com/unstablebuild/blue/logging"
-	log "github.com/sirupsen/logrus"
 	"github.com/unstablebuild/rune-go-sdk/term"
 	"github.com/unstablebuild/tcell/v3"
 	"unstable.build/rune/internal/cell"
