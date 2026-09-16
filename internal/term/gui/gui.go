@@ -36,7 +36,6 @@ import (
 	"unstable.build/rune/internal/cell"
 	"unstable.build/rune/internal/term/gui/drawrect"
 	"unstable.build/rune/internal/term/gui/font"
-	"unstable.build/rune/internal/term/gui/wingfx"
 )
 
 var (
