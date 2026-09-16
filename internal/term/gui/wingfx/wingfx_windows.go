@@ -128,7 +128,7 @@ func applyAcrylic(hwnd uintptr, blurRadius int) {
 		Data:   uintptr(unsafe.Pointer(&policy)),
 		SizeOf: uint32(unsafe.Sizeof(policy)),
 	}
-	_, _, _ = procSetWindowCompositionAttribute.Call(hwnd, uintptr(unsafe.Pointer(&data))
+	_, _, _ = procSetWindowCompositionAttribute.Call(hwnd, uintptr(unsafe.Pointer(&data)))
 }
 
 func resolveHWND(title string) uintptr {
