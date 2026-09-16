@@ -2,9 +2,6 @@ go 1.26.6
 
 use .
 
-// Temporary: use Bell8571 branches until unstablebuild/ebiten#1 and
-// unstablebuild/tcell#6 are merged and tagged. Remove this file (or these
-// two replace lines) after those land.
-replace github.com/hajimehoshi/ebiten/v2 => github.com/Bell8571/ebiten v2.0.0-20260916183859-62a4c5fdb888
+replace github.com/hajimehoshi/ebiten/v2 => github.com/Bell8571/ebiten/v2 v2.0.0-20260916183859-62a4c5fdb888
 
-replace github.com/unstablebuild/tcell/v3 => github.com/Bell8571/tcell v3.0.0-20260916183909-d34ee8ef8934
+replace github.com/unstablebuild/tcell/v3 => github.com/Bell8571/tcell/v3 v3.0.0-20260916183909-d34ee8ef8934
