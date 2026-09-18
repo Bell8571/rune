@@ -1,7 +1,0 @@
-go 1.26.6
-
-use .
-
-replace github.com/hajimehoshi/ebiten/v2 => github.com/Bell8571/ebiten/v2 v2.0.0-20260916183859-62a4c5fdb888
-
-replace github.com/unstablebuild/tcell/v3 => github.com/Bell8571/tcell/v3 v3.0.0-20260916215457-5f98175a410b
