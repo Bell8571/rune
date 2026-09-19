@@ -27,7 +27,7 @@ var (
 
 const (
 	defaultWidth, defaultHeight = 800, 600
-	echoPollInterval           = 50 * time.Microsecond
+	echoPollInterval            = 50 * time.Microsecond
 )
 
 var echoWaitBudget = 2 * time.Millisecond
@@ -87,7 +87,7 @@ type GUI struct {
 	echoLikely  bool
 	prevTickKey bool
 
-	interruptPending atomic.Bool
+	interruptPending    atomic.Bool
 	processWindowClosed func() []term.Event
 	closingHandled      bool
 	closeOnce           sync.Once

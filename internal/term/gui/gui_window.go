@@ -24,10 +24,13 @@ func (g *GUI) RestoreWindow()  { ebiten.RestoreWindow() }
 
 func (g *GUI) SetFullscreen(fullscreen bool) { ebiten.SetFullscreen(fullscreen) }
 func (g *GUI) SetWindowPosition(x, y int)    { ebiten.SetWindowPosition(x, y) }
+
+// SetWindowSize resizes the native window to width and height in pixels.
 func (g *GUI) SetWindowSize(width, height int) {
 	ebiten.SetWindowSize(width, height)
 }
 
+// IncreaseFontSize bumps the active UI font one step and relayouts.
 func (g *GUI) IncreaseFontSize() error {
 	err := g.fontManager.IncreaseSize()
 	if err == nil {
@@ -36,6 +39,7 @@ func (g *GUI) IncreaseFontSize() error {
 	return err
 }
 
+// DecreaseFontSize drops the active UI font one step and relayouts.
 func (g *GUI) DecreaseFontSize() error {
 	err := g.fontManager.DecreaseSize()
 	if err == nil {
@@ -44,6 +48,7 @@ func (g *GUI) DecreaseFontSize() error {
 	return err
 }
 
+// IncreaseCellWidth widens each cell and relayouts the grid.
 func (g *GUI) IncreaseCellWidth() error {
 	err := g.fontManager.IncreaseCellWidth()
 	if err == nil {
@@ -52,6 +57,7 @@ func (g *GUI) IncreaseCellWidth() error {
 	return err
 }
 
+// DecreaseCellWidth narrows each cell and relayouts the grid.
 func (g *GUI) DecreaseCellWidth() error {
 	err := g.fontManager.DecreaseCellWidth()
 	if err == nil {
@@ -60,6 +66,7 @@ func (g *GUI) DecreaseCellWidth() error {
 	return err
 }
 
+// IncreaseLineHeight adds leading between rows and relayouts.
 func (g *GUI) IncreaseLineHeight() error {
 	err := g.fontManager.IncreaseLineHeight()
 	if err == nil {
@@ -68,6 +75,7 @@ func (g *GUI) IncreaseLineHeight() error {
 	return err
 }
 
+// DecreaseLineHeight reduces leading between rows and relayouts.
 func (g *GUI) DecreaseLineHeight() error {
 	err := g.fontManager.DecreaseLineHeight()
 	if err == nil {
@@ -76,6 +84,7 @@ func (g *GUI) DecreaseLineHeight() error {
 	return err
 }
 
+// SetFont switches the UI typeface to family and relayouts.
 func (g *GUI) SetFont(family string) error {
 	err := g.fontManager.SetFontByFamilyName(family)
 	if err == nil {

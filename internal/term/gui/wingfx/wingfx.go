@@ -29,10 +29,13 @@ type Effects struct {
 	BlurRadius int
 }
 
+// EnableProcessDPI turns on per-monitor DPI awareness for the process.
 func EnableProcessDPI() { enableProcessDPI() }
 
+// ApplyWindowEffects finds the HWND titled title and applies DWM effects.
 func ApplyWindowEffects(title string, fx Effects) bool {
 	return applyWindowEffects(title, fx)
 }
 
+// Supported reports whether this build can talk to the Windows compositor.
 func Supported() bool { return supported }
