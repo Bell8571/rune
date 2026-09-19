@@ -24,22 +24,50 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/unstablebuild/rune-go-sdk/api/textapi"
 	"unstable.build/rune/internal/smartware"
 )
 
 func init() {
 	exCommands["smartwareoverlay"] = commandAll{
-		man: textapiManual(
-			"Draft a Smartware overlay run against an installed jacket. Does not execute the jacket. Requires SMARTWARE_CORE.",
-			"<jacket-id> <job...>",
-		),
+		man: textapi.CommandManual{
+			Summary: "Draft a Smartware overlay run against an installed jacket. " +
+				"Does not execute the jacket. Requires SMARTWARE_CORE to point at smartware-core.",
+			Synopsis: "<jacket-id> <job...>",
+		},
 		handler: (*ex).smartwareOverlay,
 	}
 }
 
-func textapiManual(summary, synopsis string) interface{} {
-	return struct {
-		Summary  string
-		Synopsis string
-	}{Summary: summary, Synopsis: synopsis}
+func (e *ex) smartwareOverlay(ctx context.Context, args ...string) error {
+	if len(args) < 2 {
+		return errors.New("usage: smartwareoverlay <jacket-id> <job...>")
+	}
+	core := strings.TrimSpace(os.Getenv("SMARTWARE_CORE"))
+	if core == "" {
+		return errors.New("SMARTWARE_CORE is not set")
+	}
+	built, err := smartware.BuildOverlayCmd(smartware.OverlayArgs{
+		CoreDir: core,
+		Jacket:  args[0],
+		Job:     strings.Join(args[1:], " "),
+	})
+	if err != nil {
+		return err
+	}
+	cmd := exec.CommandContext(ctx, built.Name, built.Args...)
+	cmd.Dir = built.Dir
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	runErr := cmd.Run()
+	out := strings.TrimSpace(stdout.String() + "\n" + stderr.String())
+	if runErr != nil {
+		if out != "" {
+			return errors.New(out)
+		}
+		return runErr
+	}
+	_ = e.sendNotificationInfo(ctx, out)
+	return nil
 }
