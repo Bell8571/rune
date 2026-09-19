@@ -18,4 +18,5 @@
 
 package debug
 
+// StartPProfOnSignal is a no-op on Windows; SIGUSR1 is not available.
 func StartPProfOnSignal() {}

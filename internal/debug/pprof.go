@@ -26,6 +26,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// StartPProfHTTP serves pprof on addr and returns the bound address.
 func StartPProfHTTP(addr string) (string, error) {
 	ln, err := net.Listen("tcp", addr)
 	if err != nil {

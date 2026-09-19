@@ -26,6 +26,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// StartPProfOnSignal starts pprof when SIGUSR1 is received.
 func StartPProfOnSignal() {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGUSR1)

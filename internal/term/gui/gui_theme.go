@@ -29,6 +29,7 @@ import (
 	"unstable.build/rune/internal/cell"
 )
 
+// SetTheme switches the active color theme by name.
 func (g *GUI) SetTheme(name string) (Theme, error) {
 	defer g.resize(g.width, g.height, g.fontManager.DeviceScale())
 	g.resetTheme()
@@ -43,8 +44,10 @@ func (g *GUI) SetTheme(name string) (Theme, error) {
 	return theme, nil
 }
 
+// Theme returns the name of the active color theme.
 func (g *GUI) Theme() string { return g.theme }
 
+// Themes lists available color theme names.
 func (g *GUI) Themes() []string {
 	var themes []string
 	for name := range g.colorThemes {
@@ -53,12 +56,14 @@ func (g *GUI) Themes() []string {
 	return themes
 }
 
+// SetOpacity sets background and foreground opacity in 0..1.
 func (g *GUI) SetOpacity(background, foreground float64) {
 	g.bgOpacity = background
 	g.fgOpacity = foreground
 	g.resize(g.width, g.height, g.fontManager.DeviceScale())
 }
 
+// SetBackgroundBlur sets the compositor blur radius in pixels.
 func (g *GUI) SetBackgroundBlur(radius int) {
 	if radius == 0 {
 		radius = 1
@@ -67,12 +72,15 @@ func (g *GUI) SetBackgroundBlur(radius int) {
 	g.resize(g.width, g.height, g.fontManager.DeviceScale())
 }
 
+// AvailableFontFamilies lists installed UI font family names.
 func (g *GUI) AvailableFontFamilies() (iterator.Iterator[string], error) {
 	return g.fontManager.AvailableFontFamilies()
 }
 
+// Size returns the current window size in pixels.
 func (g *GUI) Size() (width, height int) { return g.width, g.height }
 
+// LastPosition returns the last known window origin in pixels.
 func (g *GUI) LastPosition() (x, y int) { return g.lastPositionX, g.lastPositionY }
 
 func (g *GUI) drawHandler(ctx context.Context) {
@@ -109,6 +117,7 @@ func (g *GUI) resize(width, height int, deviceScale float64) {
 	g.needsDraw = true
 }
 
+// CellRect maps a cell rectangle to pixel coordinates.
 func (g *GUI) CellRect(x, y, width, height int) (px, py, pw, ph float64) {
 	scale := g.deviceScale
 	if scale <= 0 {

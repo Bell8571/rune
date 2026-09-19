@@ -18,12 +18,20 @@ package gui
 
 import ebiten "github.com/hajimehoshi/ebiten/v2"
 
+// MinimizeWindow minimizes the native window.
 func (g *GUI) MinimizeWindow() { ebiten.MinimizeWindow() }
-func (g *GUI) MaximizeWindow() { ebiten.MaximizeWindow() }
-func (g *GUI) RestoreWindow()  { ebiten.RestoreWindow() }
 
+// MaximizeWindow maximizes the native window.
+func (g *GUI) MaximizeWindow() { ebiten.MaximizeWindow() }
+
+// RestoreWindow restores the native window from min/max.
+func (g *GUI) RestoreWindow() { ebiten.RestoreWindow() }
+
+// SetFullscreen toggles exclusive fullscreen.
 func (g *GUI) SetFullscreen(fullscreen bool) { ebiten.SetFullscreen(fullscreen) }
-func (g *GUI) SetWindowPosition(x, y int)    { ebiten.SetWindowPosition(x, y) }
+
+// SetWindowPosition moves the native window to x, y.
+func (g *GUI) SetWindowPosition(x, y int) { ebiten.SetWindowPosition(x, y) }
 
 // SetWindowSize resizes the native window to width and height in pixels.
 func (g *GUI) SetWindowSize(width, height int) {

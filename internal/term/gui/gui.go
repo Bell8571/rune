@@ -22,6 +22,7 @@ import (
 var (
 	_ ebiten.Game = (*GUI)(nil)
 
+	// ErrHandlerExited reports that the TUI handler goroutine returned.
 	ErrHandlerExited = errors.New("tui handler exited")
 )
 
@@ -32,6 +33,7 @@ const (
 
 var echoWaitBudget = 2 * time.Millisecond
 
+// GUI is the ebiten-backed graphical front end for a Rune terminal.
 type GUI struct {
 	ctx               context.Context
 	cancelCtx         func()
