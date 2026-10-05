@@ -1082,5 +1082,5 @@ func TestMakeLocalURI(t *testing.T) {
 	driveURI, err := makeLocalURI("D:/a/rune/rune")
 	require.NoError(t, err)
 	assert.Empty(t, driveURI.Hostname())
-	assert.Equal(t, "/D:/a/rune/rune", driveURI.Path())
+	assert.Equal(t, "D:/a/rune/rune", driveURI.Path())
 }

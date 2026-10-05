@@ -43,14 +43,15 @@
 +}
 --- a/api/workspaceapi/uri.go
 +++ b/api/workspaceapi/uri.go
-@@ -271,8 +271,13 @@
+@@ -271,12 +271,20 @@
  }
  
  func makeLocalURI(path string) (URI, error) {
 -	uriStr := "file://" + path
 -	u, err := url.Parse(uriStr)
 +	// Absolute Windows paths do not start with a slash, so "file://" + path
-+	// treats the drive letter as a host. Force an empty host and slash separators.
++	// treats the drive letter as a host. Force an empty host, then drop the
++	// extra slash so Path() is an OS path (D:/a/rune, not /D:/a/rune).
 +	slash := filepath.ToSlash(path)
 +	if !strings.HasPrefix(slash, "/") {
 +		slash = "/" + slash
@@ -59,3 +60,10 @@
  	if err != nil {
  		return URI{}, err
  	}
+-
++	if len(u.Path) >= 3 && u.Path[0] == '/' && u.Path[2] == ':' {
++		u.Path = u.Path[1:]
++	}
+ 	return makeFileURI(u)
+ }
+ 
