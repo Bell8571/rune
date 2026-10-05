@@ -28,11 +28,32 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Install MinGW
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: false
+          install: mingw-w64-x86_64-gcc
+          path-type: inherit
+
       - name: Build GUI binary
         shell: bash
         run: |
-          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 \
-            go build -tags=ebitensinglethread -o bin/rune.exe ./cmd/rune
+          gcc --version
+          go mod download github.com/unstablebuild/rune-go-sdk@v0.2.0
+          mod="$(go env GOMODCACHE)/github.com/unstablebuild/rune-go-sdk@v0.2.0"
+          if command -v cygpath >/dev/null 2>&1; then
+            mod="$(cygpath -u "$mod")"
+          fi
+          client="$mod/api/workspaceapi/workspacerpc/client.go"
+          # rune-go-sdk v0.2.0 reads Unix-only SysProcAttr.Setsid/Setctty.
+          # No published release fixes that. Patch the module cache so the
+          # Windows compile can see those fields via reflection.
+          if ! grep -q 'func sessionFlags' "$client"; then
+            chmod -R u+w "$mod/api/workspaceapi/workspacerpc"
+            patch -d "$mod" -p1 --forward --batch < scripts/rune-go-sdk-windows.patch
+          fi
+          CGO_ENABLED=1 go build -tags=ebitensinglethread -o bin/rune.exe ./cmd/rune
 
       - name: Smoke test the built binary
         shell: bash

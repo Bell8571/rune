@@ -26,13 +26,13 @@ import (
 	"os"
 	"slices"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/unstablebuild/rune-go-sdk/api/schemeapi"
 	"github.com/unstablebuild/rune-go-sdk/api/semanticapi"
 	"github.com/unstablebuild/rune-go-sdk/api/workspaceapi"
 	"unstable.build/rune/internal/ide/idelsp/jsonrpc2"
+	"unstable.build/rune/internal/procattr"
 	"unstable.build/rune/internal/workspace/processctx"
 )
 
@@ -141,19 +141,6 @@ type deadlineWriter struct {
 	conn  net.Conn
 }
 
-func lspSocketpair() ([2]int, error) {
-	syscall.ForkLock.Lock()
-	defer syscall.ForkLock.Unlock()
-
-	fds, err := syscall.Socketpair(syscall.AF_UNIX, syscall.SOCK_STREAM, 0)
-	if err != nil {
-		return fds, err
-	}
-	syscall.CloseOnExec(fds[0])
-	syscall.CloseOnExec(fds[1])
-	return fds, nil
-}
-
 func (w *deadlineWriter) Write(ctx context.Context, msg jsonrpc2.Message) error {
 	if deadline, ok := ctx.Deadline(); ok {
 		if err := w.conn.SetWriteDeadline(deadline); err != nil {
@@ -218,7 +205,7 @@ func (s *langServer) start(ctx context.Context) error {
 		// telemetry child), and some are reached through a launcher
 		// that execs the server as a grandchild. Heading its own
 		// process group is what lets stopping the server reach them.
-		SysProcAttr: &syscall.SysProcAttr{Setpgid: true},
+		SysProcAttr: procattr.ProcessGroup(),
 	}
 
 	// Do not use ctx for lifecycle cancellation: it is scoped to the initial

@@ -13,7 +13,7 @@ require (
 	github.com/ernestrc/go-multierror v1.1.2
 	github.com/ernestrc/sensible v0.4.0
 	github.com/hajimehoshi/ebiten/v2 v2.7.4
-	github.com/junegunn/fzf v0.0.0-20201216124428-ab3937ee5a62
+	github.com/junegunn/fzf v0.73.1
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/modelcontextprotocol/go-sdk v1.4.1
 	github.com/openai/openai-go/v2 v2.7.1
@@ -25,7 +25,7 @@ require (
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.12.1
 	github.com/unstablebuild/rune-go-sdk v0.2.0
-	github.com/unstablebuild/tcell/v3 v3.6.5
+	github.com/unstablebuild/tcell/v3 v3.6.6-0.20260919122710-90d3af1d7f12
 	go.uber.org/goleak v1.3.0
 	golang.org/x/crypto v0.56.0
 	golang.org/x/image v0.45.0
@@ -82,7 +82,7 @@ require (
 	golang.org/x/oauth2 v0.36.0
 	google.golang.org/genai v1.59.0
 	mvdan.cc/sh/v3 v3.12.0
-	oras.land/oras-go/v2 v2.6.1
+	oras.land/oras-go/v2 v2.6.2
 	tailscale.com v1.102.3
 )
 
@@ -168,6 +168,7 @@ require (
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jsimonetti/rtnetlink v1.4.1 // indirect
+	github.com/junegunn/go-shellwords v0.0.0-20250127100254-2aa3b3277741 // indirect
 	github.com/kevinburke/ssh_config v1.4.0 // indirect
 	github.com/klauspost/compress v1.19.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
@@ -260,4 +261,4 @@ replace github.com/go-git/go-git/v6 => github.com/unstablebuild/go-git/v6 v6.0.1
 
 replace github.com/tree-sitter/go-tree-sitter => github.com/unstablebuild/go-tree-sitter v0.25.0-ub.1
 
-replace github.com/hajimehoshi/ebiten/v2 => github.com/unstablebuild/ebiten/v2 v2.7.5-ub.27
+replace github.com/hajimehoshi/ebiten/v2 => github.com/unstablebuild/ebiten/v2 v2.7.6-0.20260916232601-6f1d59169775

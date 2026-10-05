@@ -43,6 +43,7 @@ import (
 	"github.com/unstablebuild/rune-go-sdk/api/workspaceapi"
 	"unstable.build/rune/internal/debug"
 	"unstable.build/rune/internal/gitenv"
+	"unstable.build/rune/internal/procattr"
 )
 
 const (
@@ -429,8 +430,7 @@ func (p *fileScheme) StartCommand(ctx context.Context, cmd workspaceapi.Cmd) (
 	// `go run` exec the real program as a grandchild that SIGKILL
 	// cannot be forwarded to. Joining an existing Pgid is someone
 	// else's group and not ours to signal.
-	attr := cmd.SysProcAttr
-	leadsGroup := attr != nil && attr.Setpgid && attr.Pgid == 0
+	leadsGroup := procattr.LeadsGroup(cmd.SysProcAttr)
 	if leadsGroup {
 		stdcmd.Cancel = func() error { return killProcessGroup(stdcmd.Process) }
 	}
@@ -518,20 +518,11 @@ func (p *fileScheme) Signal(pid workspaceapi.Pid, signal syscall.Signal) error {
 		return errProcNotFound
 	}
 
-	err := syscall.Kill(int(pid), signal)
+	err := signalPid(int(pid), signal)
 	if err != nil {
 		return fmt.Errorf("syscall kill: %w", err)
 	}
 	return nil
-}
-
-// killProcessGroup terminates every process in the group led by proc.
-func killProcessGroup(proc *os.Process) error {
-	err := syscall.Kill(-proc.Pid, syscall.SIGKILL)
-	if errors.Is(err, syscall.ESRCH) {
-		return os.ErrProcessDone
-	}
-	return err
 }
 
 func (p *fileScheme) NewPty(ctx context.Context) (workspaceapi.Pty, error) {

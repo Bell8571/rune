@@ -111,6 +111,13 @@ func TestSearch(t *testing.T) {
 	}
 }
 
+func TestFuzzyCaseInsensitiveFoldsASCII(t *testing.T) {
+	matches := Fuzzy([][]byte{[]byte("X Files"), []byte("capitol")}, "x", false)
+	if assert.Len(t, matches, 1) {
+		assert.Equal(t, "X Files", string(matches[0].Data()))
+	}
+}
+
 func benchSearch(b *testing.B, n int) {
 	slab := util.MakeSlab(slab16Size, slab32Size)
 	algo := fzf.FuzzyMatchV2
