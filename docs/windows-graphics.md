@@ -15,22 +15,31 @@ non-Windows builds.
 
 ## Build
 
-This branch includes a `go.work` that temporarily replaces:
+`go.mod` pins the fork commits that contain the Windows fixes. Those
+commits are on the upstream default branches and are not tagged yet:
 
-- `github.com/hajimehoshi/ebiten/v2` -> `Bell8571/ebiten` @ `windows-inithint` ([unstablebuild/ebiten#1](https://github.com/unstablebuild/ebiten/pull/1))
-- `github.com/unstablebuild/tcell/v3` -> `Bell8571/tcell` @ `windows-console-screen` ([unstablebuild/tcell#6](https://github.com/unstablebuild/tcell/pull/6))
+- `github.com/hajimehoshi/ebiten/v2` -> `unstablebuild/ebiten` `v2.7.6-0.20260916232601-6f1d59169775` ([unstablebuild/ebiten#1](https://github.com/unstablebuild/ebiten/pull/1)), one commit after `v2.7.5-ub.32`
+- `github.com/unstablebuild/tcell/v3` -> `v3.6.6-0.20260919122710-90d3af1d7f12` ([unstablebuild/tcell#6](https://github.com/unstablebuild/tcell/pull/6)), three commits after `v3.6.5`
+
+`v2.7.5-ub.27` and `tcell` `v3.6.5` do not contain those fixes, so a
+Windows GUI build fails in `ui_glfw.go` (`glfw.InitHint`) and
+`console_win.go` (`cScreen`).
+
+Tree-sitter is cgo, so the GUI binary needs a C compiler (`CGO_ENABLED=1`)
+even though ebiten itself is built with `-tags=ebitensinglethread`.
+`github.com/unstablebuild/rune-go-sdk@v0.2.0` does not build or start
+on Windows as published: `workspacerpc` reads Unix-only
+`SysProcAttr.Setsid` and `Setctty`, and `CurrentUserHostURI` turns
+`D:\...` into a `file://` URL whose drive letter is a host. No published
+SDK tag fixes either. Apply `scripts/rune-go-sdk-windows.patch` to that
+module before building.
 
 ```bash
-GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -tags=ebitensinglethread -o rune.exe ./cmd/rune
+go mod download github.com/unstablebuild/rune-go-sdk@v0.2.0
+mod="$(go env GOMODCACHE)/github.com/unstablebuild/rune-go-sdk@v0.2.0"
+patch -d "$mod" -p1 < scripts/rune-go-sdk-windows.patch
+CGO_ENABLED=1 go build -tags=ebitensinglethread -o rune.exe ./cmd/rune
 ```
-
-Ebiten on Windows does not need CGO. Drop `go.work` (or its two replace
-lines) once those PRs are merged and tagged.
-
-## Remaining upstream work
-
-1. [unstablebuild/ebiten#1](https://github.com/unstablebuild/ebiten/pull/1) — `glfw.InitHint` stub on Windows
-2. [unstablebuild/tcell#6](https://github.com/unstablebuild/tcell/pull/6) — missing `Screen` methods on `cScreen`
 
 Transparent themes (`gui.window_opacity`, `gui.window_blur_radius`)
 activate Mica on Windows 11 and Acrylic on Windows 10.

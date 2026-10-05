@@ -28,6 +28,12 @@ const (
 	slab32Size int = 2048       // 8KB * 32 = 256KB
 )
 
+func init() {
+	// fzf fills the ASCII class and bonus tables in Init, not package init.
+	// Without that, case-insensitive fuzzy match does not fold capitals.
+	fzf.Init("default")
+}
+
 // Match represents a search match.
 type Match struct {
 	idx    int

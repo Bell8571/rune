@@ -1071,3 +1071,16 @@ func TestFileSchemeStartCommandScrubsGitHookEnv(t *testing.T) {
 	assert.Contains(t, env, "CALLER_VAR=explicit",
 		"caller-provided cmd.Env must still pass through")
 }
+
+func TestMakeLocalURI(t *testing.T) {
+	unixURI, err := makeLocalURI("/tmp/rune")
+	require.NoError(t, err)
+	assert.Empty(t, unixURI.Hostname())
+	assert.Equal(t, "/tmp/rune", unixURI.Path())
+
+	// A drive path must not be parsed as a host plus an invalid port.
+	driveURI, err := makeLocalURI("D:/a/rune/rune")
+	require.NoError(t, err)
+	assert.Empty(t, driveURI.Hostname())
+	assert.Equal(t, "D:/a/rune/rune", driveURI.Path())
+}

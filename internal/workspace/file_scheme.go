@@ -43,6 +43,7 @@ import (
 	"github.com/unstablebuild/rune-go-sdk/api/workspaceapi"
 	"unstable.build/rune/internal/debug"
 	"unstable.build/rune/internal/gitenv"
+	"unstable.build/rune/internal/procattr"
 )
 
 const (
@@ -429,8 +430,7 @@ func (p *fileScheme) StartCommand(ctx context.Context, cmd workspaceapi.Cmd) (
 	// `go run` exec the real program as a grandchild that SIGKILL
 	// cannot be forwarded to. Joining an existing Pgid is someone
 	// else's group and not ours to signal.
-	attr := cmd.SysProcAttr
-	leadsGroup := attr != nil && attr.Setpgid && attr.Pgid == 0
+	leadsGroup := procattr.LeadsGroup(cmd.SysProcAttr)
 	if leadsGroup {
 		stdcmd.Cancel = func() error { return killProcessGroup(stdcmd.Process) }
 	}
@@ -518,20 +518,11 @@ func (p *fileScheme) Signal(pid workspaceapi.Pid, signal syscall.Signal) error {
 		return errProcNotFound
 	}
 
-	err := syscall.Kill(int(pid), signal)
+	err := signalPid(int(pid), signal)
 	if err != nil {
 		return fmt.Errorf("syscall kill: %w", err)
 	}
 	return nil
-}
-
-// killProcessGroup terminates every process in the group led by proc.
-func killProcessGroup(proc *os.Process) error {
-	err := syscall.Kill(-proc.Pid, syscall.SIGKILL)
-	if errors.Is(err, syscall.ESRCH) {
-		return os.ErrProcessDone
-	}
-	return err
 }
 
 func (p *fileScheme) NewPty(ctx context.Context) (workspaceapi.Pty, error) {
@@ -761,8 +752,21 @@ func (f *ownedSchemeFile) Close() error {
 }
 
 func makeLocalURI(path string) (workspaceapi.URI, error) {
-	uriStr := "file://" + path
-	return workspaceapi.ParseURI(uriStr)
+	// Windows drive paths are not URL hosts. Parse with an empty host, then
+	// drop the extra slash so the stored path is an OS path.
+	slash := filepath.ToSlash(path)
+	if !strings.HasPrefix(slash, "/") {
+		slash = "/" + slash
+	}
+	uri, err := workspaceapi.ParseURI("file://" + slash)
+	if err != nil {
+		return uri, err
+	}
+	p := uri.Path()
+	if len(p) >= 3 && p[0] == '/' && p[2] == ':' {
+		return workspaceapi.WithPath(uri, p[1:])
+	}
+	return uri, nil
 }
 
 func (p *fileScheme) tryUnwrapFileWriter(f io.Writer) io.Writer {

@@ -44,6 +44,10 @@ jobs:
             GOTESTFLAGS='-race -timeout 300s -p 1 -coverprofile=coverage.out'
 
       - uses: codecov/codecov-action@v4
+        # The action still exits 1 on a TLS handshake failure to the upload
+        # host even when fail_ci_if_error is false. Coverage upload is not
+        # the test gate; the Test step above is.
+        continue-on-error: true
         with:
           files: coverage.out
           token: ${{ secrets.CODECOV_TOKEN }}
