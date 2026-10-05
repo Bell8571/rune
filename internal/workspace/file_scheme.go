@@ -752,8 +752,12 @@ func (f *ownedSchemeFile) Close() error {
 }
 
 func makeLocalURI(path string) (workspaceapi.URI, error) {
-	uriStr := "file://" + path
-	return workspaceapi.ParseURI(uriStr)
+	// Same shape as the SDK helper: Windows drive paths are not hostnames.
+	slash := filepath.ToSlash(path)
+	if !strings.HasPrefix(slash, "/") {
+		slash = "/" + slash
+	}
+	return workspaceapi.ParseURI("file://" + slash)
 }
 
 func (p *fileScheme) tryUnwrapFileWriter(f io.Writer) io.Writer {

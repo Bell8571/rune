@@ -27,10 +27,12 @@ Windows GUI build fails in `ui_glfw.go` (`glfw.InitHint`) and
 
 Tree-sitter is cgo, so the GUI binary needs a C compiler (`CGO_ENABLED=1`)
 even though ebiten itself is built with `-tags=ebitensinglethread`.
-`github.com/unstablebuild/rune-go-sdk@v0.2.0` also reads
-`syscall.SysProcAttr.Setsid` and `Setctty`, which do not exist on
-Windows and are not fixed in any published SDK tag. Apply
-`scripts/rune-go-sdk-windows.patch` to that module before building.
+`github.com/unstablebuild/rune-go-sdk@v0.2.0` does not build or start
+on Windows as published: `workspacerpc` reads Unix-only
+`SysProcAttr.Setsid` and `Setctty`, and `CurrentUserHostURI` turns
+`D:\...` into a `file://` URL whose drive letter is a host. No published
+SDK tag fixes either. Apply `scripts/rune-go-sdk-windows.patch` to that
+module before building.
 
 ```bash
 go mod download github.com/unstablebuild/rune-go-sdk@v0.2.0
